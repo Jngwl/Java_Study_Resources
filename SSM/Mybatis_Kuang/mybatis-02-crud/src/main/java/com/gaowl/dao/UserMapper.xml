@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF8" ?>    <!-- 若“1字节的UTF-8序列的字节1无效”，将编码方式由UTF-8修改为UTF8即可 -->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaowl.dao.UserMapper">
+    <!-- 1.查询所有用户 -->
+    <select id="getUserList" resultType="com.gaowl.pojo.User">
+        select * from mybatis.user
+    </select>
+
+    <select id="getUserLike" resultType="com.gaowl.pojo.User">
+        select * from mybatis.user where name like #{name}
+    </select>
+
+    <!-- 2.根据id查询单个用户(传入一个参数) -->
+    <select id="getUserByID" parameterType="int" resultType="com.gaowl.pojo.User">
+        select * from mybatis.user where id = #{id}
+    </select>
+    <!-- 传入多个参数，采用map -->
+    <select id="getUserByNp" parameterType="map" resultType="com.gaowl.pojo.User">
+        select * from mybatis.user where name=#{userName} and pwd = #{userPassword}
+    </select>
+
+    <!-- 3.增加一个新的用户 -->
+    <!--对象中的属性可以直接取出来-->
+    <insert id="addUser" parameterType="com.gaowl.pojo.User">
+        insert into mybatis.user (id, name, pwd) values(#{id}, #{name}, #{pwd})
+    </insert>
+
+    <insert id="addUser2" parameterType="Map">
+        insert into mybatis.user (id, name, pwd) VALUES (#{userId}, #{userName}, #{userPassword})
+    </insert>
+
+    <!-- 4.更新用户信息 -->
+    <update id="updateUser" parameterType="com.gaowl.pojo.User">
+        update mybatis.user set name=#{name}, pwd=#{pwd} where id =#{id}
+    </update>
+
+    <!-- 5.删除某个用户 -->
+    <delete id="deleteUser" parameterType="com.gaowl.pojo.User">
+        delete from mybatis.user where id = #{id}
+    </delete>
+
+</mapper>
+

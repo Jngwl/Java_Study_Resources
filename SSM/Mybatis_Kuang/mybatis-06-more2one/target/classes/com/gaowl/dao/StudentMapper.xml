@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaowl.dao.StudentMapper">
+
+<!--    <select id="getStudents" resultType="com.gaowl.pojo.Student">
+        select * from mybatis.student;
+    </select>-->
+
+
+
+
+
+    <!-- 先获取所有学生的信息，之后根据获取到的学生信息中的老师的id，获取老师的信息
+         学生的结果集中包含老师，此处采用关联查询。-->
+
+    <select id="getStudents" resultMap="Student2Teacher">
+        select * from mybatis.student;
+    </select>
+
+    <resultMap id="Student2Teacher" type="Student">
+        <!-- association关联属性  column数据库表中的列名 property实体类属性名 javaType属性类型-->
+        <association column="tid" property="teacher" javaType="Teacher" select="getTeacher"/>
+    </resultMap>
+
+    <select id="getTeacher" resultType="Teacher">
+        select * from mybatis.teacher where id = #{tid}
+    </select>
+
+
+    <!--======================= 按照结果嵌套处理 ===================-->
+    <select id="getStudents2" resultMap="Student2Teacher2" >
+        select s.id sid, s.name sname, s.tid stid, t.name tname from mybatis.student s, mybatis.teacher t where s.tid = t.id;
+    </select>
+
+    <resultMap id="Student2Teacher2" type="Student">
+        <result property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <association property="teacher" javaType="Teacher">
+            <result property="id" column="stid"/>
+            <result property="name" column="tname"/>
+        </association>
+    </resultMap>
+
+
+
+</mapper>
+
+
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaowl.dao.TeacherMapper">
+    <!-- 此处结果类型为Teacher，不是List -->
+    <select id="getAllTeachers" resultType="Teacher">
+        select * from mybatis.teacher
+    </select>
+
+    <!--=============  按结果嵌套查询 ===============-->
+    <select id="getTeacher" resultMap="Teacher2Student">
+        select t.id tid, t.name tname, s.id sid, s.name sname
+        from mybatis.teacher t, mybatis.student s
+        where t.id = s.tid and t.id = #{id};
+    </select>
+    
+    <resultMap id="Teacher2Student" type="Teacher">
+        <result property="id" column="tid"/>
+        <result property="name" column="tname"/>
+        <!-- 复杂属性时，我们需要单独对其处理：
+                 对象：采用association
+                 集合：采用collection，其中泛型信息可通过 ofType 获取
+             javaType指定属性的类型-->
+        <collection property="students" ofType="Student">
+            <result property="id" column="sid"/>
+            <result property="name" column="sname"/>
+            <result property="tid" column="tid"/>
+        </collection>
+    </resultMap>
+
+
+
+    <!--=============  子查询 ===============-->
+    <select id="getTeacher2" resultMap="Teacher2Student2">
+        select * from mybatis.teacher where id = #{id}
+    </select>
+    
+    <resultMap id="Teacher2Student2" type="Teacher">
+        <!-- 返回值的类型（实体类属性的类型、students的属性）采用 javaType 指定，其泛型的类型采用 ofType 指定-->
+        <result property="id" column="id"/>
+        <collection property="students" javaType="ArrayList" ofType="Student" select="getStudents" column="id"/>
+    </resultMap>
+
+    <!-- 传过来的值来自 column属性 -->
+    <select id="getStudents" resultType="Student">
+        select * from mybatis.student where tid = #{tid}
+    </select>
+</mapper>
+
+
+
+

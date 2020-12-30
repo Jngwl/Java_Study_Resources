@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties"/>  <!--导入外部配置文件-->
+
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <typeAliases>            <!--设置别名-->
+        <typeAlias type="com.gaowl.pojo.User" alias="User"/>
+    </typeAliases>
+
+    <environments default="development">   <!--配置环境，连接数据库-->
+        <environment id="development">
+            <transactionManager type="JDBC"/>  <!--事务管理-->
+            <dataSource type="POOLED">    <!--数据源-->
+                <property name="driver" value="${driver}"/>    <!--获取外部配置文件中的数据，通过-->
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper class="com.gaowl.dao.UserMapper"/>
+    </mappers>
+
+</configuration>
